@@ -3,7 +3,8 @@
 The \_printf It has been optimized to take various inputs and optional arguments based exactly on how the standard library function printf works. It is a variadic function that takes a variable number of arguments and returns the number of characters printed (excluding the null byte used to end output to strings).
 
 ## **Authors**
-* **[Tiger Eruona Blessing](https://www.github.com/Blessingtiger)** **[Alfeo Raymond](https://www.github.com/Pheogrammer)**
+* **[Tiger Eruona Blessing](https://www.github.com/Blessingtiger)**
+* **[Alfeo Raymond](https://www.github.com/Pheogrammer)**
 
 **The flag characters**
 
