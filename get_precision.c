@@ -1,131 +1,41 @@
-#include <stdarg.h>
 #include "main.h"
 
 /**
- * _printf - print any formated string
- * @format: string format
- * Return: the number of characters printed
+ * get_precision - Calculates the precision for printing
+ * @format: Formatted string in which to print the arguments
+ * @i: List of arguments to be printed.
+ * @list: list of arguments.
+ *
+ * Return: Precision.
  */
-int _printf(const char *format, ...)
+int get_precision(const char *format, int *i, va_list list)
 {
-	va_list list;
-	int count = 0, printed = 0;
+	int curr_i = *i + 1;
+	int precision = -1;
 
-	if (!format)
-		return (-1);
-	va_start(list, format);
-	while (format && format[count])
+	if (format[curr_i] != '.')
+		return (precision);
+
+	precision = 0;
+
+	for (curr_i += 1; format[curr_i] != '\0'; curr_i++)
 	{
-		if (format[count] == '%')
+		if (is_digit(format[curr_i]))
 		{
-			if (format[count + 1] == '\0')
-				return (-1);
-			format_values(list, format, &printed, &count);
+			precision *= 10;
+			precision += format[curr_i] - '0';
+		}
+		else if (format[curr_i] == '*')
+		{
+			curr_i++;
+			precision = va_arg(list, int);
+			break;
 		}
 		else
-		{
-			_putchar(format[count]);
-			printed += 1;
-			count += 1;
-		}
+			break;
 	}
-	va_end(list);
-	return (printed);
-}
 
-/**
- * format_values - format string
- * @list: list of args
- * @format: format string
- * @printed: number of chars printed
- * @count: count iterator
- * Return: pointer to func that correspond to operator
- */
-void format_values(va_list list, const char *format, int *printed, int *count)
-{
-	int f = 0, tobi = 0, tooc = 0;
-	unsigned int num = 0;
+	*i = curr_i - 1;
 
-	switch (format[*count + 1])
-	{
-		case '%':
-			_putchar(format[*count + 1]);
-			*printed += 1;
-			break;
-		case 'c':
-			_putchar(va_arg(list, int));
-			*printed += 1;
-			break;
-		case 's':
-			format_string(list, printed, 's');
-			break;
-		case 'd': case 'i':
-				format_int(list, printed);
-				break;
-		case 'b':
-			num = va_arg(list, unsigned int);
-			tobi = _tobinoct(num, 0, 2);
-			*printed  += tobi;
-			break;
-		case 'o':
-			num = va_arg(list, unsigned int);
-			tooc = _tobinoct(num, 0, 8);
-			*printed += tooc;
-			break;
-		case 'r':
-			format_string(list, printed, 'r');
-			break;
-		default:
-			*count += 1;
-			*printed += 1;
-			_putchar('%');
-			f = 1;
-	}
-	if (!f)
-		*count += 2;
-}
-
-/**
- * format_int - test number formats
- * @list: list of args
- * @printed: pointer to amount of printed chars
- * Return: void
- */
-void format_int(va_list list, int *printed)
-{
-	int num = va_arg(list, int);
-
-	if (num <= 0)
-		*printed += 1;
-	_printd(num);
-	*printed += _numlen(num);
-}
-
-/**
- * format_string - test string format
- * @list: list of args
- * @printed: pointer to amount of printed chars
- * Return: void
- */
-void format_string(va_list list, int *printed, char sr)
-{
-	char *s;
-
-	s = va_arg(list, char *);
-	if (s)
-	{
-		*printed += _strlen(s);
-		if (sr == 's')
-			_puts(s);
-		else
-			_printstr(s);
-	}
-	else
-	{
-		*printed += _strlen("(null)");
-		if (sr == 's')
-			_puts("(null)");
-		else
-			_printstr("(null)");
-	}
+	return (precision);
 }
